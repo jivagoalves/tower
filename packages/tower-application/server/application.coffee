@@ -211,6 +211,24 @@ class Tower.Application extends Tower.Engine
     watch: ->
       Tower.ApplicationWatcher.watch()
 
+    models: Ember.computed(->
+      result = []
+      
+      for key, value of App
+        if Tower.Model.detect(value)
+          result.push(value)
+
+      result
+    ).volatile()
+
+    saveModelFields: ->
+      models = {}
+      
+      _.each Ember.get(@, 'models'), (model) ->
+        models[model.toString()] = model.longKeysToShortKeys()
+
+      fs.writeFileSync(Tower.joinPath(Tower.root, 'data/schema.json'), _.stringify(models))
+
     _loadBase: ->
       @_requireAny 'app/config', 'application'
       @_requireAny 'app/config', 'bootstrap'
@@ -330,7 +348,7 @@ class Tower.Application extends Tower.Engine
         else
           paths = paths.concat @_selectNestedPaths(requirePath, wrench.readdirSyncRecursive(requirePath))
 
-      @pathsByType[key] = _.select paths, (path) -> path.match(pattern)
+      @pathsByType[key] = _.select _.uniq(paths), (path) -> path.match(pattern)
 
     _selectNestedPaths: (dir, paths) ->
       _.select _.map(paths, (path) ->

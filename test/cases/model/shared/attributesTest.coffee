@@ -353,3 +353,68 @@ describe 'other', ->
         assert.ok db.records.get(newId)
         Tower.isClient = false
         done()
+
+  describe 'short keys', ->
+    afterEach ->
+      delete Tower.USE_SHORT_KEYS
+
+    test 'longKeysToShortKeys', ->
+      expected =
+        id: 'i',
+        title: 't',
+        rating: 'r',
+        type: 'T',
+        tags: 'A',
+        meta: 'm',
+        userIds: 'u',
+        userId: 'U',
+        createdAt: 'c',
+        updatedAt: 'B',
+        likeCount: 'l',
+        slug: 's'
+
+      result = App.Post.longKeysToShortKeys()
+
+      for key, value of expected
+        assert.deepEqual value, result[key]
+
+    test 'shortKeysToLongKeys', ->
+      expected =
+        i: 'id',
+        t: 'title',
+        r: 'rating',
+        T: 'type',
+        A: 'tags',
+        m: 'meta',
+        u: 'userIds',
+        U: 'userId',
+        c: 'createdAt',
+        B: 'updatedAt',
+        l: 'likeCount',
+        s: 'slug'
+
+      result = App.Post.shortKeysToLongKeys()
+
+      for key, value of expected
+        assert.deepEqual value, result[key]
+
+    test 'Tower.USE_SHORT_KEYS = true', ->
+      Tower.USE_SHORT_KEYS = true
+
+      expected =
+        t: 'string'
+        r: 8,
+        T: 'Post',
+        A: [],
+        m: null,
+        u: [],
+        U: undefined,
+        c: undefined,
+        B: undefined,
+        l: 0,
+        s: null
+
+      result = App.Post.build(title: 'string', rating: 8).toJSON()
+
+      for key, value of expected
+        assert.deepEqual value, result[key]

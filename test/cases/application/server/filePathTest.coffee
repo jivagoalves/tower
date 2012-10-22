@@ -30,16 +30,6 @@ describe 'file paths', ->
       'sessionsController.coffee',
       'testJsonController.coffee',
       'testRoutesController.coffee',
-      'usersController.coffee',
-      'applicationController.coffee',
-      'attachmentsController.coffee',
-      'controllerScopesMetadataController.coffee',
-      'customController.coffee',
-      'headersController.coffee',
-      'postsController.coffee',
-      'sessionsController.coffee',
-      'testJsonController.coffee',
-      'testRoutesController.coffee',
       'usersController.coffee'
     ].sort(), (i) -> Tower.joinPath(root, i)
 

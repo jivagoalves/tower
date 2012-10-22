@@ -74,6 +74,13 @@ Tower.ModelSerialization =
             records[i] = record._serializableHash(opts)
           result[name] = records
 
+    if Tower.USE_SHORT_KEYS
+      keys = @constructor.longKeysToShortKeys()
+
+      for key, value of result
+        delete result[key]
+        result[keys[key]] = value
+
     # @todo think about this more
     # for key, value of result
     #   delete result[key] unless value?

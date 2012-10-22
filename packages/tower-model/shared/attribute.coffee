@@ -40,6 +40,8 @@ class Tower.ModelAttribute
       block         = options
       options       = {}
 
+    @shortKey       = options.shortKey if options.shortKey
+
     @type           = type = options.type || 'String'
 
     if typeof type != 'string'

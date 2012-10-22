@@ -64,6 +64,38 @@ Tower.ModelAttributes =
 
       fields
 
+    # @todo need to reset on file reload
+    longKeysToShortKeys: ->
+      return @_longKeysToShortKeys if @_longKeysToShortKeys
+
+      ABC = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').sort()
+      nextABC = (char) ->
+        if (index = _.indexOf(ABC, char, true)) > -1 || (index = _.indexOf(ABC, char.toUpperCase(), true)) > -1
+          ABC.splice(index, 1)[0]
+        else
+          ABC.shift()
+
+      fields = @fields()
+      result = {}
+
+      # @todo maybe an option to make them semi-more readable, using
+      #   "aA" for "activatedAt", instead of "z" or whatever.
+      for name, field of fields
+        result[name] = field.shortKey || nextABC(name.charAt(0))
+
+      @_longKeysToShortKeys = result
+
+    shortKeysToLongKeys: ->
+      return @_shortKeysToLongKeys if @_shortKeysToLongKeys
+
+      longKeysToShortKeys = @longKeysToShortKeys()
+      result = {}
+
+      for longKey, shortKey of longKeysToShortKeys
+        result[shortKey] = longKey
+
+      @_shortKeysToLongKeys = result
+
     # Returns a hash with keys for every attribute, and the default value (or `undefined`).
     # 
     # @private
