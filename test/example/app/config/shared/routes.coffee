@@ -2,6 +2,8 @@ Tower.Route.draw ->
   @match "/", to: "application#welcome"
   @match "/sign-in", to: "sessions#new", via: "get", as: "login"
 
+  @resources 'attachments'
+  
   # test routes
   @match "/test-routes/default", to: "testRoutes#defaultMethod"
   @match "/test-routes/get", to: "testRoutes#getMethod", via: "get"
@@ -53,7 +55,6 @@ Tower.Route.draw ->
   for action in actions
     @match "/headers/#{action}", to: "headers##{action}"
 
-  @resources 'attachments'
   @resources 'posts'
   @resources 'users'
 

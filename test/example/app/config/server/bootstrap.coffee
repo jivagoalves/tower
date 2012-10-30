@@ -1,5 +1,3 @@
-require('coffee-script').
-
 App.configure ->
   @use 'favicon', Tower.publicPath + '/favicon.png'
   @use 'static',  Tower.publicPath, maxAge: Tower.publicCacheDuration
@@ -15,6 +13,7 @@ App.configure ->
   @use (request, response, next) ->
     response.removeHeader('X-Powered-By')
     next()
+
   @use Tower.MiddlewareAgent
   @use Tower.MiddlewareLocation
   #if Tower.httpCredentials && Tower.branch != 'development'

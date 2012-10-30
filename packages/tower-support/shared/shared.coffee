@@ -252,6 +252,24 @@ _.extend Tower,
   module: (name) ->
     Tower.modules[name] ||= Tower._modules[name]()
 
+  constantOld: (string) ->
+    node  = global
+    parts = string.split(".")
+
+    try
+      for part in parts
+        node = node[part]
+    catch error
+      # try doing namespace version as last resort
+      node = null
+    unless node
+      namespace = Tower.namespace()
+      if namespace && parts[0] != namespace
+        node = Tower.constant("#{namespace}.#{string}")
+      else
+        throw new Error("Constant '#{string}' wasn't found")
+    node
+
   constant: (string) ->
     node  = global
     parts = string.split(".")
