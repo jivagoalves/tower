@@ -45,6 +45,7 @@ class Tower.ModelScope
     'excludes'
     'paginate'
     'page'
+    'in'
     'allIn'
     'allOf'
     'alsoIn'

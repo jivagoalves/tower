@@ -103,6 +103,9 @@ Tower.ModelCursorFinders =
   fetch: (callback) ->
     @store.fetch(@, callback)
 
+  # @todo
+  pipe: (stream) ->
+
   mergeCreatedRecords: (records) ->
     @pushMatching(records)
 

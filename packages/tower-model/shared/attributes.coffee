@@ -1,5 +1,24 @@
 _ = Tower._
 
+# Tower.Model.field(); // defaults to 'string'
+# Tower.Model.field('boolean');
+# Tower.Model.field('boolean', {default: false});
+# Tower.Model.field('boolean', {default: false}).validates('presence');
+# Tower.Model.field('boolean', {default: false, presence: true});
+# Tower.Model.field({type: 'boolean'});
+jsField = (type, options) ->
+  if _.isHash(type)
+    options = type
+  else
+    type ||= 'string'
+  
+  options ||= {}
+  options.type ||= type
+
+  Ember.computed(->
+
+  ).meta(options)
+
 # @mixin
 Tower.ModelAttributes =
   Serialization: {}

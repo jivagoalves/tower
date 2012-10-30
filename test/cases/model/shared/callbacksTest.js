@@ -1,0 +1,1 @@
+describe("Tower.ModelCallbacks", function() {});

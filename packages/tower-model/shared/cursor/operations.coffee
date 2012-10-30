@@ -1,5 +1,15 @@
 _ = Tower._
 
+###
+App.PostsController = Tower.ResourcesController.extend
+  criteria: Tower.Criteria.extend
+    titleBinding: Ember.bind('App.searchTitle')
+    createdAt:
+      gteBinding: Ember.bind('App.searchStartDate')
+###
+Tower.Criteria = Ember.Object.extend
+  propertyDidChange: ->
+
 # @mixin
 Tower.ModelCursorOperations = Ember.Mixin.create
   # @todo will refresh this cursor after x milliseconds,
@@ -8,6 +18,9 @@ Tower.ModelCursorOperations = Ember.Mixin.create
 
   invalidate: ->
     @_invalidated = true
+
+  criteria: Ember.computed ->
+    Tower.Criteria.create()
 
   # Join commands.
   #
@@ -42,6 +55,9 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   with: (transaction) ->
     @transaction = transaction
 
+  sort: ->
+    @order(arguments...)
+
   # Set of conditions the database fields must satisfy.
   #
   # @example
@@ -50,12 +66,15 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   #
   # @param [Object] conditions
   where: (conditions) ->
+    # @get('criteria').where(conditions)
     if conditions.isCursor
       @merge(conditions)
     else if arguments.length == 2
       object = {}
       object[arguments[0]] = arguments[1]
       @_where.push(object)
+    else if typeof conditions == 'string'
+      @_where.push(conditions)
     else
       @_where.push(conditions)
     @invalidate()
@@ -65,14 +84,26 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   #
   # @example
   #   App.Post.order('title', 'desc').all()
+  #   App.Post.order('title-').all()
   #
   # @param [String] attribute
   # @param [String] direction ('asc') can be 'asc' or 'desc'.
   #
   # @return [Array] returns the full set of order commands for this cursor.
-  order: (attribute, direction = 'asc') ->
+  order: (attribute, direction) ->
+    if arguments.length == 1
+      attribute = attribute.replace /([\-\+])$/, (_, d) ->
+        direction = d
+        ''
+
+      direction ||= 'asc'
+    
     value = if _.isArray(attribute) then attribute else [attribute, direction]
-    @_order.push value
+    
+    if value[1].length == 1
+      value[1] = if value[1] == '+' then 'asc' else 'desc'
+
+    @_order.push(value)
     @invalidate()
     @
 
@@ -96,7 +127,7 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   #
   # @return [Array] returns the full set of order commands for this cursor.
   asc: (attributes...) ->
-    @order(attribute) for attribute in attributes
+    @order(attribute, 'asc') for attribute in attributes
     @
 
   # Set of attributes to sort by, descending.
@@ -146,6 +177,9 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   anyIn: ->
     @_whereOperator '$any', arguments...
 
+  in: ->
+    @_whereOperator '$all', arguments...
+
   # @example
   #   App.Post.notIn(tags: ['.net']).all()
   notIn: ->
@@ -177,9 +211,12 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   #
   # @return [Array] returns the fields for this cursor.
   select: ->
-    @_fields = _.flatten _.args(arguments)
+    @_fields = _.flatten(_.args(arguments))
     @invalidate()
     @
+
+  fields: ->
+    @select(arguments...)
 
   includes: ->
     @_includes = _.flatten _.args(arguments)
@@ -191,6 +228,9 @@ Tower.ModelCursorOperations = Ember.Mixin.create
     @invalidate()
     @
 
+  distinct: (value) ->
+    @uniq(value)
+
   # @example
   #   App.Post.page(2).all()
   # 
@@ -201,6 +241,7 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   # 
   # @todo Maybe we should make the `count` query part of the `paginate` method instead.
   page: (page) ->
+    @_page = page
     @limit(@_limit || Tower.ModelCursor::defaultLimit)
     limit = @getCriteria('limit')
     Ember.set @, 'currentPage', page
@@ -215,6 +256,8 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   #   App.User.near(40.741404, -73.988135)
   near: (coordinates) ->
     @where(coordinates: $near: coordinates)
+
+  center: ->
 
   # @todo Make an awesome geo api.
   #
@@ -319,15 +362,20 @@ Tower.ModelCursorOperations = Ember.Mixin.create
   # @private
   _whereOperator: (operator, attributes) ->
     query = {}
-    
-    if typeof attributes == 'string'
+
+    unless _.isHash(attributes)
       attrs = {}
-      attrs[arguments[1]] = arguments[2]
+      if arguments.length == 2
+        attrs[@_where.pop()] = arguments[1]
+      else
+        attrs[arguments[1]] = arguments[2]
+
       attributes = attrs
 
     for key, value of attributes
       query[key] = {}
       query[key][operator] = value
+
     @where query
 
   # Alias for {#order}.

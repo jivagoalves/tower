@@ -1,4 +1,4 @@
-SRC = $(shell find test/cases -name client -prune -o -name '*Test.coffee' -print)
+SRC = $(shell find test/cases -name client -prune -o -name '*Test.coffee' -print -o -name '*Test.js' -print)
 STORES = memory mongodb
 CMD = node_modules/mocha/bin/mocha
 DIR = $(shell pwd)

@@ -1,3 +1,5 @@
+require('coffee-script').
+
 App.configure ->
   @use 'favicon', Tower.publicPath + '/favicon.png'
   @use 'static',  Tower.publicPath, maxAge: Tower.publicCacheDuration

@@ -129,4 +129,6 @@ Tower.ModelCursorMixin = Ember.Mixin.create(
 
 Tower.ModelCursor.reopen(Tower.ModelCursorMixin)
 
+Tower.Cursor = Tower.ModelCursor
+
 module.exports = Tower.ModelCursor
