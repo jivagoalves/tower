@@ -55,7 +55,7 @@ _.extend Tower,
       Tower.include @, arguments...
 
     className: ->
-      Tower._.functionName(@)
+      _.functionName(@)
 
     build: (attributes) ->
       object = @create()
@@ -251,24 +251,6 @@ _.extend Tower,
   # which is a function lazily returning the module.
   module: (name) ->
     Tower.modules[name] ||= Tower._modules[name]()
-
-  constantOld: (string) ->
-    node  = global
-    parts = string.split(".")
-
-    try
-      for part in parts
-        node = node[part]
-    catch error
-      # try doing namespace version as last resort
-      node = null
-    unless node
-      namespace = Tower.namespace()
-      if namespace && parts[0] != namespace
-        node = Tower.constant("#{namespace}.#{string}")
-      else
-        throw new Error("Constant '#{string}' wasn't found")
-    node
 
   constant: (string) ->
     node  = global

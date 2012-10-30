@@ -460,4 +460,16 @@ describe('other', function() {
       }
     });
   });
+
+  describe('JS API', function() {
+    var field, meta, Model;
+
+    test('Tower.Model.field', function() {
+      App.ModelTest1 = Tower.Model.extend({
+        aString: Tower.Model.jsField('string')
+      });
+
+      App.ModelTest1.build().get('aString')
+    });
+  });
 });

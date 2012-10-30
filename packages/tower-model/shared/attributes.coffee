@@ -14,16 +14,30 @@ jsField = (type, options) ->
   
   options ||= {}
   options.type ||= type
+  options.isAttribute = true
 
   Ember.computed(->
-
+    type
   ).meta(options)
+
+jsFields = Ember.computed(->
+  map = Ember.Map.create()
+
+  @eachComputedProperty (name, meta) ->
+    map.set(name, meta) if meta.isAttribute
+
+  map
+).cacheable()
 
 # @mixin
 Tower.ModelAttributes =
   Serialization: {}
 
   ClassMethods:
+    jsFields: jsFields
+
+    jsField: jsField
+
     # @todo there are no tests for this yet.
     dynamicFields: true
 

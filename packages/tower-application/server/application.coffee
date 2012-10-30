@@ -259,6 +259,20 @@ class Tower.Application extends Tower.Engine
 
         @_requirePaths @selectPaths(path)
 
+      _.each @controllerClasses(), (klass) ->
+        klass.extended() if klass.extended
+
+    controllerClasses: ->
+      result = []
+
+      app = Tower.Application.instance()
+
+      _.each app, (key) ->
+        if Tower.Controller.detect(app[key])
+          result.push(app[key])
+
+      result
+
     # In development mode, this is called on the first render.
     # 
     # This lazily loads all the models/views/controllers, which can be slow.

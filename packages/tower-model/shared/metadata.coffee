@@ -73,6 +73,16 @@ Tower.ModelMetadata =
         else
           @metadata().defaults[key] = value
 
+    className: ->
+      className = @_super()
+      
+      unless className
+        className = @toString().split('.')
+        className.shift()
+        className = className.join('.')
+      
+      className
+
     # All of the different names related to this class.
     #
     # The result is memoized.
