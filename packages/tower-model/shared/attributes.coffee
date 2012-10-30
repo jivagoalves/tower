@@ -13,12 +13,73 @@ jsField = (type, options) ->
     type ||= 'string'
   
   options ||= {}
-  options.type ||= type
-  options.isAttribute = true
 
-  Ember.computed(->
-    type
-  ).meta(options)
+  if typeof options == 'string'
+    options       = type: options
+  else if typeof options == 'function'
+    block         = options
+    options       = {}
+
+  shortKey       = options.shortKey if options.shortKey
+  type           = type = options.type || 'String'
+
+  if typeof type != 'string'
+    itemType     = type[0]
+    type = 'Array'
+
+  encodingType = switch type
+    when 'Id', 'Date', 'Array', 'String', 'Integer', 'Float', 'BigDecimal', 'Time', 'DateTime', 'Boolean', 'Object', 'Number', 'Geo'
+      type
+    else
+      'Model'
+
+  _default = options.default
+
+  unless _default
+    if type == 'Geo'
+      _default = lat: null, lng: null
+    else if @type == 'Array'
+      _default = []
+
+  serializer  = Tower['StoreSerializer' +type]
+
+  get = options.get || (serializer.from if serializer)
+  set = options.set || (serializer.to if serializer)
+
+  meta =
+    'default': _default
+    encodingType: encodingType
+    shortKey: shortKey
+    type: type
+    itemType: itemType
+    isAttribute: true
+    transformFrom: get
+    transformTo: set
+
+  meta.defaultValue = (record) ->
+    _default = @['default']
+
+    return _default unless _default?
+
+    if _.isArray(_default)
+      _default.concat()
+    else if _.isHash(_default)
+      _.extend({}, _default)
+    else if typeof(_default) == 'function'
+      _default.call(record)
+    else
+      _default
+
+  Ember.computed((key, value) ->
+    if arguments.length == 2
+      value = meta.transformTo(value, @)
+      value = @setAttribute(key, value)
+      value
+    else
+      value = @getAttribute(key)
+      value = meta.defaultValue(@) if value == undefined
+      meta.transformFrom(value, @)
+  ).cacheable().meta(meta)
 
 jsFields = Ember.computed(->
   map = Ember.Map.create()

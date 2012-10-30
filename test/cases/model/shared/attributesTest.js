@@ -462,14 +462,24 @@ describe('other', function() {
   });
 
   describe('JS API', function() {
-    var field, meta, Model;
+    var field, meta, Model, record;
 
     test('Tower.Model.field', function() {
-      App.ModelTest1 = Tower.Model.extend({
-        aString: Tower.Model.jsField('string')
+      Model = App.ModelTest1 = Tower.Model.extend({
+        aStringWithTypeAsString: Tower.Model.jsField('string'),
+        aStringWithTypeAsOption: Tower.Model.jsField({type: 'string'}),
+        aStringWithTypeAsStringAndDefault: Tower.Model.jsField('string', {default: 'A string!'})
       });
 
-      App.ModelTest1.build().get('aString')
+      record = App.ModelTest1.build();
+
+      // aStringWithTypeAsString
+      assert.equal(record.get('aStringWithTypeAsString'), undefined);
+      assert.equal(Model.get('jsFields').get('aStringWithTypeAsString').type, 'String');
+
+      // aStringWithTypeAsStringAndDefault
+      assert.equal(record.get('aStringWithTypeAsStringAndDefault'), 'A string!');
+      assert.equal(Model.get('jsFields').get('aStringWithTypeAsStringAndDefault').type, 'String');
     });
   });
 });
