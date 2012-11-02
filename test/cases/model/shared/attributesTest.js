@@ -1,7 +1,56 @@
 var attr = Tower.ModelAttribute;
 
 describe('attributes', function() {
-  describe('class', function() {
+  before(function() {
+    App.BaseModelNew = Tower.Model.extend({
+      likeCountWithoutDefault: Tower.Model.jsField('Integer'),
+      likeCountWithDefault: Tower.Model.jsField('Integer', {default: 0}),
+      tags: Tower.Model.jsField('Array', {default: []}),
+      title: Tower.Model.jsField(),
+      nestedModels: Tower.Model.jsField(['NestedModel'], {default: []}),
+      favorite: Tower.Model.jsField('Boolean', {default: false}),
+      likeCount: Tower.Model.jsField('Integer', {default: 0}),
+    });
+  });
+
+  describe('JS API', function() {
+    var field, Model;
+
+    before(function() {
+      Model = App.BaseModelNew;
+    });
+
+    test('type: "Id"', function() {
+      field = Model.get('jsFields').get('id');
+      assert.equal(field.type, "Id");
+    });
+
+    test('type: "Integer" without default', function() {
+      field = Model.get('jsFields').get('likeCountWithoutDefault');
+      assert.equal(field.type, "Integer");
+      assert.equal(field["default"], undefined);
+    });
+
+    test('type: "Integer", default: 0', function() {
+      field = Model.get('jsFields').get('likeCountWithDefault');
+      assert.equal(field.type, "Integer");
+      assert.equal(field['default'], 0);
+    });
+
+    test('type: "Array", default: []', function() {
+      field = Model.get('jsFields').get('tags');
+      assert.equal(field.type, "Array");
+      assert.isArray(field['default']);
+    });
+
+    test('default type == "String"', function() {
+      field = Model.get('jsFields').get('title');
+      assert.equal(field.type, "String");
+      assert.equal(field['default'], undefined);
+    });
+  });
+
+  describe('CS API', function() {
     test('type: "Id"', function() {
       var field = App.BaseModel.fields().id;
       assert.equal(field.type, "Id");

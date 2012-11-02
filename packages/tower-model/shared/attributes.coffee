@@ -10,7 +10,7 @@ jsField = (type, options) ->
   if _.isHash(type)
     options = type
   else
-    type ||= 'string'
+    type ||= 'String'
   
   options ||= {}
 
@@ -21,7 +21,7 @@ jsField = (type, options) ->
     options       = {}
 
   shortKey       = options.shortKey if options.shortKey
-  type           = type = options.type || 'String'
+  type           || options.type || 'String'
 
   if typeof type != 'string'
     itemType     = type[0]
