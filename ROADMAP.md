@@ -70,16 +70,14 @@ You are free to contribute any of these features in any order… I'm more of a f
 
 <a name="0.4.3" href="0.4.3"></a>
 
-### 0.4.3 (installation, platform support)
+### ✔ 0.4.3 (installation, platform support)
 
 - ~~get tower src development installation working on mac~~
 - ~~get tower src development installation working on linux~~
 - ~~get deployment working on windows azure~~
 - ~~get npm installation working on windows 7~~
 
-<a name="0.4.4" href="0.4.4"></a>
-
-### 0.4.4 (controllers)
+### Controllers
 
 #### Requirements
 
@@ -121,9 +119,7 @@ You are free to contribute any of these features in any order… I'm more of a f
 - better controller scopes
 - store params on the client as you change state
 
-<a name="0.4.5" href="0.4.5"></a>
-
-### 0.4.5 (models)
+### Models
 
 - ~~uniqueness validation (database should not save a record unless specified attributes are globally unique (i.e. username))~~
 - ~~email/phone validation (and other common validation helpers)~~
@@ -153,9 +149,7 @@ You are free to contribute any of these features in any order… I'm more of a f
 - remove the `Tower.ModelScope` wrapper class.
 - the store should be higher level, so a "google maps store" would provide a somewhat REST API to a few resources (place, location, business, etc.) So the store has a set of models/tables/collections it manages.
 
-<a name="0.4.6" href="0.4.6"></a>
-
-### 0.4.6 (templates, views)
+### Templates / Views
 
 - automatic sorting when new model is added to cursor (`Ember.Sortable`)
 - automatic form validations based on model of client
@@ -169,20 +163,14 @@ You are free to contribute any of these features in any order… I'm more of a f
 - test assets can be served with gzip
 - masking input fields (phone numbers, social security, email, money, etc.)
 
-By this point, the models, views, templates, and controllers should be fairly complete.
-
-<a name="0.4.7" href="0.4.7"></a>
-
-### 0.4.7 (model extensions)
+### Model Extensions
 
 - *authentication
 - *authorization ([tower-model/shared/ability.coffee](https://github.com/viatropos/tower/blob/a6acf7ecfd5f7ed5d501fdd0c2adc2f0b828c1c6/packages/tower-model/shared/ability.coffee))
 - *test storing images on s3 ([tower-store/server/s3.coffee](https://github.com/viatropos/tower/blob/a6acf7ecfd5f7ed5d501fdd0c2adc2f0b828c1c6/packages/tower-store/server/s3.coffee))
 - *image/asset/attachment model api (see https://github.com/thoughtbot/paperclip) ([tower-model/shared/attachment.coffee](https://github.com/viatropos/tower/blob/a6acf7ecfd5f7ed5d501fdd0c2adc2f0b828c1c6/packages/tower-model/shared/attachment.coffee))
 
-<a name="0.4.8" href="0.4.8"></a>
-
-### 0.4.8 (sockets)
+### Sockets
 
 - ~~push notifications (web socket integration into the controllers)~~
 - ~~swappable sockets api (sock.ly, socket.io)~~
@@ -190,9 +178,7 @@ By this point, the models, views, templates, and controllers should be fairly co
 - *document the cursor/pub-sub api
 - write lots of tests for this
 
-<a name="0.4.9" href="0.4.9"></a>
-
-### 0.4.9 (background jobs, emails)
+### Background Jobs, Emails
 
 - ~~Test the mailer on heroku~~
 - ~~background queuing with redis (`User.queue("welcome", 1)` vs. `User.welcome(1)`, for background processing) - https://github.com/technoweenie/coffee-resque~~
@@ -200,9 +186,7 @@ By this point, the models, views, templates, and controllers should be fairly co
 - inline css in email templates
 - make logs write to `./log` folder.
 
-<a name="0.4.10" href="0.4.10"></a>
-
-### 0.4.10 (helpers, configuration)
+### Helpers, Configuration
 
 - add underscore helpers
   - *geo transforms (lat/lng to x/y in pixels, etc.)
@@ -240,8 +224,6 @@ By this point, the models, views, templates, and controllers should be fairly co
   - http://www.linuxjournal.com/article/10699
   - https://github.com/sferik/t
 
-<a name="0.5.0" href="0.5.0"></a>
-
 ### 0.5.0 (theme)
 
 - well designed error/stacktrace page
@@ -250,21 +232,15 @@ By this point, the models, views, templates, and controllers should be fairly co
 - make sure templates have proper escaping (xss protection)
 - http://rails-admin-tb.herokuapp.com/admin/league
 
-<a name="0.6.0" href="0.6.0"></a>
+### Testing, Robustness
 
-## 0.6.0 - Testing, Robustness
-
-<a name="0.5.1" href="0.5.1"></a>
-
-### 0.5.1 (benchmarking)
+### Benchmarking
 
 - cache manifest: https://github.com/johntopley/manifesto
 - integrate `"use strict";` into the codebase if possible
 - benchmarks folder with stress tests
 
-<a name="0.5.2" href="0.5.2"></a>
-
-### 0.5.2 (cleanup, optimizations, documentation)
+### Cleanup, optimizations, documentation
 
 - autocomplete in the terminal (rubymine, node-inspector)
 - ~~autoreload in the console (using hook.io)~~
@@ -273,13 +249,9 @@ By this point, the models, views, templates, and controllers should be fairly co
 - document code.
 - standardize `Tower.x` api for global helper methods.
 
-<a name="0.7.0" href="0.7.0"></a>
+### Performance Tuning
 
-## 0.7.0 - Performance Tuning
-
-<a name="0.8.0" href="0.8.0"></a>
-
-## 0.8.0 - Multiple Databases, Batch Requests, Content Processing
+### Multiple Databases, Batch Requests, Content Processing
 
 - postgresql
 - mysql
