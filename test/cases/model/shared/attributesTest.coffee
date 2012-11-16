@@ -26,10 +26,11 @@ describe 'attributes', ->
 
     # App.JsModel.reopenClass({
     #     recent: Tower.Cursor.where(recent: true)
-    #   , favorited: Tower.Cursor.where(favorited: true)
+    #     # or
+    #   , favorited: -> @where(favorited: true)
     # });
 
-    # App.JsModel.get('recent').all()
+    # App.JsModel.recent().all()
 
     # App.JsModelsController = Tower.Controller.extend()
     # App.get('jsModelsController.recent')

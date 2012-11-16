@@ -101,6 +101,33 @@ global.App = Tower.Application.create()
 
 ## Models
 
+``` javascript
+// app/models/shared/user.js
+App.User = Tower.Model.extend({
+    firstName: Tower.field().validates('presence')
+  , lastName: Tower.field().validates('presence')
+  , email: Tower.field().validates('format', /\w+@\w+.com/)
+  , activatedAt: Tower.field('date').defaultValue(_.now)
+  
+  , address: Tower.hasOne({embed: true})
+
+  , posts: Tower.hasMany()
+  , comments: Tower.hasMany()
+
+  , welcome: function() {
+    Tower.Mailer.welcome(this).deliver();
+  }
+});
+
+App.User.reopenClass({
+    recent: function() {
+      return this.gte('createdAt', _(3).days().ago().toDate());
+    }
+});
+
+App.User.after('create', 'welcome');
+```
+
 ``` coffeescript
 # app/models/shared/user.coffee
 class App.User extends Tower.Model
