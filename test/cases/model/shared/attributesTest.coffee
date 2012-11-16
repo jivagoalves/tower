@@ -10,7 +10,8 @@ describe 'attributes', ->
 
       stringWithValidations2a: Tower.field('string').validates('presence', 'uniqueness', on: 'create')
       stringWithValidations2b: Tower.field('string').validates(presence: true, uniqueness: true, on: 'create')
-      
+      # there is a general argument pattern throughout most of Tower,
+      # maybe we can abstract into a single generic function
       stringWithValidations3a: Tower.field('string').validates('presence', 'uniqueness', on: 'create', ifTest)
       stringWithValidations3b: Tower.field('string').validates('presence', 'uniqueness', ifTest, on: 'create')
       stringWithValidations3c: Tower.field('string').validates('presence', 'uniqueness', on: 'create', if: ifTest)
@@ -18,6 +19,20 @@ describe 'attributes', ->
       stringWithValidations4a: Tower.field('string').validates('presence', 'uniqueness', ifTest)
 
       stringWithValidations5a: Tower.field('string').validates(presence: true, {uniqueness: true, on: 'create'})
+
+      # hasManyPosts: Tower.hasMany('App.Post')
+      # hasManyPosts: Tower.hasMany(type: 'App.Post')
+      # hasManyPosts: Tower.hasMany('App.Post').validates('presence')
+
+    # App.JsModel.reopenClass({
+    #     recent: Tower.Cursor.where(recent: true)
+    #   , favorited: Tower.Cursor.where(favorited: true)
+    # });
+
+    # App.JsModel.get('recent').all()
+
+    # App.JsModelsController = Tower.Controller.extend()
+    # App.get('jsModelsController.recent')
 
     fields = undefined
 
