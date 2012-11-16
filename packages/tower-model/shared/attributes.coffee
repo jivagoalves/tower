@@ -44,7 +44,7 @@ Tower.ModelAttributes =
     # @return [Tower.ModelAttribute]
     field: (name, options) ->
       # @todo convert this to Ember.Map so it's an ordered set
-      @fields()[name] = new Tower.ModelAttribute(@, name, options)
+      @fields()[name] = (new Tower.ModelAttribute()).wire(@, name, options)
 
     # The set of fields for the model.
     #
@@ -63,6 +63,36 @@ Tower.ModelAttributes =
           @field(name, options) for name in names
 
       fields
+
+    newFields: Ember.computed ->
+      map = Ember.Map.create()
+
+      @eachComputedProperty (name, meta) ->
+        map.set(name, meta) if meta.isField
+
+      map
+
+    processFields: ->
+      return if @_processedFields
+
+      @eachComputedProperty (name, meta) =>
+        @processField(name, meta)
+
+      @_processedFields = true
+
+    processField: (name, meta) ->
+      validations = meta.validations
+
+      setupValidation = (validation) ->
+        if _.isString(validation)
+          Tower.validations[validation]
+        else if _.isFunction(validation)
+          validation
+        else
+
+
+      _.each validations, (validation, i) ->
+        validations[i] = setupValidation(validation)
 
     # Returns a hash with keys for every attribute, and the default value (or `undefined`).
     # 

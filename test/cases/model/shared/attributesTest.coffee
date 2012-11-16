@@ -1,6 +1,72 @@
 attr        = Tower.ModelAttribute
 
 describe 'attributes', ->
+  ifTest = -> true
+  describe 'jsApi', ->
+    App.JsModel = Tower.Model.extend
+      stringField: Tower.field('string')
+      stringWithValidations1a: Tower.field('string').validates('presence', 'uniqueness')
+      stringWithValidations1b: Tower.field('string').validates(presence: true, uniqueness: true)
+
+      stringWithValidations2a: Tower.field('string').validates('presence', 'uniqueness', on: 'create')
+      stringWithValidations2b: Tower.field('string').validates(presence: true, uniqueness: true, on: 'create')
+      
+      stringWithValidations3a: Tower.field('string').validates('presence', 'uniqueness', on: 'create', ifTest)
+      stringWithValidations3b: Tower.field('string').validates('presence', 'uniqueness', ifTest, on: 'create')
+      stringWithValidations3c: Tower.field('string').validates('presence', 'uniqueness', on: 'create', if: ifTest)
+      
+      stringWithValidations4a: Tower.field('string').validates('presence', 'uniqueness', ifTest)
+
+      stringWithValidations5a: Tower.field('string').validates(presence: true, {uniqueness: true, on: 'create'})
+
+    fields = undefined
+
+    assertValidations = (expected, f...) ->
+      expected = expected.sort()
+
+      _.each f, (field) ->
+        assert.deepEqual expected, field.validations.sort()
+
+    before ->
+      fields = App.JsModel.get('newFields')
+
+    test 'string', ->
+      field = fields.get('stringField')
+      assert.isTrue field.isField
+      assert.equal 'string', field.type
+
+    test 'string with validations1', ->
+      assertValidations [
+          validate: Tower.validations['presence']
+        , validate: Tower.validations['uniqueness']
+      ]
+        , fields.get('stringWithValidations1a')
+        , fields.get('stringWithValidations1b')
+
+    test 'string with validations2', ->
+      assertValidations [
+          validate: Tower.validations['presence'], on: 'create'
+        , validate: Tower.validations['uniqueness'], on: 'create'
+      ]
+        , fields.get('stringWithValidations2a')
+        , fields.get('stringWithValidations2b')
+
+    test 'string with validations3', ->
+      assertValidations [
+          validate: Tower.validations['presence'], on: 'create', if: ifTest
+        , validate: Tower.validations['uniqueness'], on: 'create', if: ifTest
+      ]
+        , fields.get('stringWithValidations3a')
+        , fields.get('stringWithValidations3b')
+        , fields.get('stringWithValidations3c')
+
+    test 'string with validations5', ->
+      assertValidations [
+          validate: Tower.validations['presence']
+        , validate: Tower.validations['uniqueness'], on: 'create'
+      ]
+        , fields.get('stringWithValidations5a')
+
   describe 'class', ->
     test 'type: "Id"', ->
       field = App.BaseModel.fields().id

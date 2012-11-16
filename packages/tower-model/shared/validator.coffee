@@ -1,5 +1,30 @@
 _ = Tower._
 
+Tower.validationSuccess = (callback) ->
+  callback() if callback
+  true
+
+Tower.validationFailure = (object, key, message, callback) ->
+  errors = Ember.get(object, 'errors')
+  errors[key] ||= []
+  errors[key].push(message)
+  callback() if callback
+  false
+
+Tower.validations =
+  uniqueness: ->
+
+  presence: (object, key, callback) ->
+    if _.isPresent(Ember.get(object, key))
+      Tower.validationSuccess(callback)
+    else
+      Tower.validationFailure(
+        object,
+        key,
+        Tower.t('model.errors.presence', attribute: key),
+        callback
+      )
+
 class Tower.ModelValidator
   @keys:
     presence:   'presence'
